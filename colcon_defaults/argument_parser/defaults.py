@@ -38,7 +38,6 @@ def deep_update(source, overrides):
             source[key] = returned
         else:
             source[key] = overrides[key]
-    return source
 
 
 class DefaultArgumentsArgumentParserDecorator(
