@@ -25,7 +25,7 @@ DEFAULTS_FILE_ENVIRONMENT_VARIABLE = EnvironmentVariable(
     'line arguments (default: $COLCON_HOME/defaults.yaml)')
 
 
-def deep_update(source, overrides):
+def _deep_update(source, overrides):
     """
     Update a nested dictionary or similar mapping.
 
