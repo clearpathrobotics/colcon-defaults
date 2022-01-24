@@ -34,10 +34,11 @@ def _deep_update(source, overrides):
     """
     for key, value in overrides.items():
         if isinstance(value, collections.abc.Mapping) and value:
-            returned = deep_update(source.get(key, {}), value)
+            returned = _deep_update(source.get(key, {}), value)
             source[key] = returned
         else:
             source[key] = overrides[key]
+    return source
 
 
 class DefaultArgumentsArgumentParserDecorator(
@@ -125,9 +126,7 @@ class DefaultArgumentsDecorator(DestinationCollectorDecorator):
         # Additionally check for these potential config files local to the
         # workspace. Warn and discard if multiple exist.
         local_config_paths = [
-            Path('.colcon_defaults.yaml'),
             Path('colcon_defaults.yaml'),
-            Path('.colcon/defaults.yaml'),
         ]
 
         local_config_files = [
@@ -139,7 +138,8 @@ class DefaultArgumentsDecorator(DestinationCollectorDecorator):
                     ', '.join(map(str, local_config_files))))
         elif len(local_config_files) == 1:
             # Merge local defaults with global defaults, possibly overwriting
-            deep_update(data, self._get_defaults_values(local_config_files[0]))
+            local_res = self._get_defaults_values(local_config_files[0])
+            _deep_update(data, local_res)
 
         # determine data keys and parsers for passed verbs (including the root)
         keys_and_parsers = []
